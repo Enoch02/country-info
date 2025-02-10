@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.enoch02.countryinfo"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.enoch02.countryinfo"
@@ -56,4 +56,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation (libs.androidx.lifecycle.viewmodel.compose)
+    implementation (libs.coil.compose)
+    implementation (libs.retrofit)
+    implementation (libs.okhttp)
+    implementation (libs.converter.gson)
 }
