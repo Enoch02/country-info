@@ -1,6 +1,7 @@
 package com.enoch02.countryinfo.ui.screens.country_list
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -37,9 +39,9 @@ import com.enoch02.countryinfo.ui.screens.country_list.components.SearchAndFilte
 fun CountryListScreen(
     viewModel: CountryInfoViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
+    onToggleTheme: () -> Unit,
 ) {
     val context = LocalContext.current
-    var darkMode by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.getAllCountries(context)
@@ -55,7 +57,7 @@ fun CountryListScreen(
                 actions = {
                     IconButton(
                         content = {
-                            val iconRes = if (darkMode) {
+                            val iconRes = if (isSystemInDarkTheme()) {
                                 R.drawable.baseline_light_mode_24
                             } else {
                                 R.drawable.baseline_dark_mode_24
@@ -63,9 +65,7 @@ fun CountryListScreen(
 
                             Icon(painter = painterResource(iconRes), contentDescription = null)
                         },
-                        onClick = {
-                            darkMode = !darkMode
-                        }
+                        onClick = onToggleTheme
                     )
                 }
             )

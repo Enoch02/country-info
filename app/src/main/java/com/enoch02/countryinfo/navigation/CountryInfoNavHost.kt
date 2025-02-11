@@ -11,13 +11,16 @@ import com.enoch02.countryinfo.ui.screens.country_detail.CountryDetailScreen
 import com.enoch02.countryinfo.ui.screens.country_list.CountryListScreen
 
 @Composable
-fun CountryInfoNavHost(navController: NavHostController = rememberNavController()) {
+fun CountryInfoNavHost(
+    navController: NavHostController = rememberNavController(),
+    onToggleTheme: () -> Unit,
+) {
     NavHost(
         navController = navController,
         startDestination = CountryInfoDestination.CountryList.route,
         builder = {
             composable(CountryInfoDestination.CountryList.route) {
-                CountryListScreen(navController = navController)
+                CountryListScreen(navController = navController, onToggleTheme = onToggleTheme)
             }
 
             composable(
