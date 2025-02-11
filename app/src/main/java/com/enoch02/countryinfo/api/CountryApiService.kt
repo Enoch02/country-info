@@ -1,12 +1,14 @@
 package com.enoch02.countryinfo.api
 
 import com.enoch02.countryinfo.model.CountryApiResponse
+import com.enoch02.countryinfo.model.StateResponse
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
+import retrofit2.http.Path
 
 interface CountryApiService {
 
@@ -15,6 +17,12 @@ interface CountryApiService {
     suspend fun getAllCountries(
         @Header("Authorization") bearerToken: String,
     ): CountryApiResponse
+
+    @GET("countries/{country}/states")
+    suspend fun getStates(
+        @Path("country") country: String,
+        @Header("Authorization") bearerToken: String,
+    ): StateResponse
 
     companion object {
         private var apiService: CountryApiService? = null

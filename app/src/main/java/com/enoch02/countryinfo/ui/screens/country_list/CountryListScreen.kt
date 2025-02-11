@@ -1,12 +1,8 @@
 package com.enoch02.countryinfo.ui.screens.country_list
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,13 +15,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.enoch02.countryinfo.R
+import com.enoch02.countryinfo.navigation.CountryInfoDestination
 import com.enoch02.countryinfo.ui.common_views.ErrorMessageView
 import com.enoch02.countryinfo.ui.common_views.LoadingView
 import com.enoch02.countryinfo.ui.screens.ContentState
@@ -35,7 +32,10 @@ import com.enoch02.countryinfo.ui.screens.country_list.components.SearchAndFilte
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CountryListScreen(viewModel: CountryInfoViewModel = viewModel()) {
+fun CountryListScreen(
+    viewModel: CountryInfoViewModel = viewModel(),
+    navController: NavHostController = rememberNavController(),
+) {
     val context = LocalContext.current
     var darkMode by remember { mutableStateOf(false) }
 
@@ -82,7 +82,14 @@ fun CountryListScreen(viewModel: CountryInfoViewModel = viewModel()) {
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .weight(0.8f),
-                                countries = content.documents.data
+                                countries = content.documents.data,
+                                onItemClick = { name ->
+                                    navController.navigate(
+                                        CountryInfoDestination.CountryDetail.withArgs(
+                                            name
+                                        )
+                                    )
+                                }
                             )
                         }
 

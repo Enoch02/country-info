@@ -11,7 +11,7 @@ data class CountryData(
     val iso3: String,
     val covid19: Covid19Data,
     @SerializedName("current_president")
-    val currentPresident: PresidentData,
+    val currentPresident: PresidentData?,
     val currency: String,
     @SerializedName("phone_code")
     val phoneCode: String,

@@ -10,7 +10,11 @@ import androidx.compose.ui.unit.dp
 import com.enoch02.countryinfo.model.CountryData
 
 @Composable
-fun CountryListView(modifier: Modifier = Modifier, countries: List<CountryData>) {
+fun CountryListView(
+    modifier: Modifier = Modifier,
+    countries: List<CountryData>,
+    onItemClick: (name: String) -> Unit,
+) {
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
@@ -22,7 +26,7 @@ fun CountryListView(modifier: Modifier = Modifier, countries: List<CountryData>)
                     name = country.name,
                     capital = country.capital,
                     onClick = {
-
+                        onItemClick(country.name)
                     }
                 )
             }
