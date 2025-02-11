@@ -13,13 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -76,23 +70,23 @@ fun CountryListScreen(
                     .fillMaxSize()
                     .padding(innerPadding),
                 content = {
-                    var showSearchResults by rememberSaveable { mutableStateOf(false) }
-
                     SearchAndFilterView(
                         modifier = Modifier.weight(0.2f),
                         onSearch = { query ->
-                            showSearchResults = true
                             viewModel.search(query = query)
                         },
                         onClear = {
-                            showSearchResults = false
+                            viewModel.showSearchResults = false
+                        },
+                        onFilterByContinent = { continents ->
+                            viewModel.filterByContinents(continents)
                         }
                     )
 
                     when (val content = viewModel.contentState) {
                         is ContentState.Loaded -> {
                             AnimatedContent(
-                                showSearchResults,
+                                viewModel.showSearchResults,
                                 label = "MainContent Animation",
                                 modifier = Modifier
                                     .fillMaxSize()

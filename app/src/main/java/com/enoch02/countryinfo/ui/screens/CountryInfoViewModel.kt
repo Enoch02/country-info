@@ -25,7 +25,9 @@ class CountryInfoViewModel : ViewModel() {
     var contentState: ContentState by mutableStateOf(ContentState.Loading)
     var country: CountryData? by mutableStateOf(null)
     var statesResponse: StateResponse? by mutableStateOf(null)
+
     val searchResults = mutableStateListOf<CountryData>()
+    var showSearchResults by mutableStateOf(false)
 
     fun getAllCountries(context: Context) {
         apiService = CountryApiService.getInstance(context)
@@ -57,6 +59,13 @@ class CountryInfoViewModel : ViewModel() {
     fun search(query: String) {
         searchResults.clear()
         searchResults.addAll(countries.filter { it.name.contains(query, ignoreCase = true) })
+        showSearchResults = true
+    }
+
+    fun filterByContinents(continents: List<String>) {
+        searchResults.clear()
+        searchResults.addAll(countries.filter { it.continent in continents })
+        showSearchResults = true
     }
 
     private suspend fun loadStates(context: Context, country: String) {

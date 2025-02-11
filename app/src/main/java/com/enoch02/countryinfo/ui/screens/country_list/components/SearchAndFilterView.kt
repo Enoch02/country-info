@@ -4,32 +4,34 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.enoch02.countryinfo.R
@@ -39,12 +41,22 @@ fun SearchAndFilterView(
     modifier: Modifier = Modifier,
     onSearch: (String) -> Unit,
     onClear: () -> Unit,
+    onFilterByContinent: (continents: List<String>) -> Unit,
 ) {
     var query by remember { mutableStateOf("") }
-
-    if (query.isEmpty()) {
-        onClear()
-    }
+    var showFilters by remember { mutableStateOf(false) }
+    val continents = listOf(
+        "Africa",
+        "Asia",
+        "Australia",
+        "Europe",
+        "North America",
+        "South America",
+        "The Caribean",
+        "Central America",
+        "Oceana"
+    )
+    val selectedContinents = remember { mutableStateListOf<String>() }
 
     Column(
         modifier = modifier.padding(horizontal = 18.dp),
@@ -75,76 +87,118 @@ fun SearchAndFilterView(
                         contentDescription = "Language"
                     )
 
+                    Spacer(Modifier.width(12.dp))
+
                     Text(text = "EN") //TODO
                 },
                 onClick = {
 
                 },
-                shape = RectangleShape
+                shape = RectangleShape,
+                modifier = Modifier.alpha(0f)
             )
 
             ElevatedButton(
                 content = {
                     Icon(
                         painter = painterResource(R.drawable.baseline_filter_list_alt_24),
-                        contentDescription = "Language"
+                        contentDescription = "Filter"
                     )
 
-                    Text(text = "Filter") //TODO
+                    Spacer(Modifier.width(12.dp))
+
+                    Text(text = "Filter")
                 },
                 onClick = {
-
+                    showFilters = true
                 },
                 shape = RectangleShape
             )
         }
     }
+
+    if (showFilters) {
+        FilterBottomSheet(
+            modifier = Modifier.fillMaxHeight(0.75f),
+            onDismiss = { showFilters = false },
+            continents = continents,
+            selectedContinents = selectedContinents,
+            addContinent = { selectedContinents.add(it) },
+            removeContinent = { selectedContinents.remove(it) },
+            clearContinents = { selectedContinents.clear() },
+            onShowResults = {
+                onFilterByContinent(selectedContinents)
+            }
+        )
+    }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CountrySearchBar(
-    query: String,
-    onQueryChange: (String) -> Unit,
+fun FilterBottomSheet(
     modifier: Modifier = Modifier,
-    placeholder: String = "Search...",
-    leadingIcon: @Composable (() -> Unit)? = {
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = "Search"
-        )
-    },
-    onSearch: () -> Unit,
-    onClear: () -> Unit,
+    onDismiss: () -> Unit,
+    continents: List<String>,
+    selectedContinents: List<String>,
+    addContinent: (String) -> Unit,
+    removeContinent: (String) -> Unit,
+    clearContinents: () -> Unit,
+    onShowResults: () -> Unit,
 ) {
-    TextField(
-        value = query,
-        onValueChange = onQueryChange,
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = 56.dp),
-        placeholder = {
-            Text(
-                text = placeholder,
-            )
-        },
-        leadingIcon = leadingIcon,
-        trailingIcon = {
-            if (query.isNotEmpty()) {
-                IconButton(onClick = onClear) {
-                    Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = "Clear"
-                    )
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        modifier = modifier,
+        content = {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Text(text = "Filter", style = MaterialTheme.typography.titleLarge)
+
+                IconButton(onClick = onDismiss) {
+                    Icon(Icons.Default.Clear, contentDescription = null)
                 }
             }
-        },
-        singleLine = true,
-        shape = RectangleShape,
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Search,
-            capitalization = KeyboardCapitalization.Words
-        ),
-        keyboardActions = KeyboardActions(onSearch = { onSearch() })
+
+            ContinentDropdown(
+                modifier = Modifier.weight(1f),
+                continents = continents,
+                selectedContinents = selectedContinents,
+                addContinent = { continent ->
+                    addContinent(continent)
+                },
+                removeContinent = { continent ->
+                    removeContinent(continent)
+                }
+            )
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                OutlinedButton(
+                    content = { Text(text = "Reset") },
+                    onClick = {
+                        clearContinents()
+                    },
+                    shape = RectangleShape
+                )
+
+                Button(
+                    content = { Text(text = "Show Results") },
+                    onClick = {
+                        onShowResults()
+                        onDismiss()
+                    },
+                    shape = RectangleShape
+                )
+            }
+        }
     )
 }
 
@@ -152,5 +206,5 @@ fun CountrySearchBar(
 @Preview
 @Composable
 private fun Preview() {
-    SearchAndFilterView(onSearch = {}, onClear = {})
+    SearchAndFilterView(onSearch = {}, onClear = {}, onFilterByContinent = {})
 }
