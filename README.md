@@ -41,7 +41,7 @@ Follow these steps to contribute:
 <p align="center">
   <img src="https://github.com/Enoch02/country-info/blob/master/assets/1.png?raw=true&width=200)" width="450">
 </p>
-<div style="display: flex; justify-content: center;">
+<div align="center">
   <img src="https://github.com/Enoch02/country-info/blob/master/assets/2.png?raw=true&width=200)" width="150">
   <img src="https://github.com/Enoch02/country-info/blob/master/assets/3.png?raw=true&width=200" width="150">
   <img src="https://github.com/Enoch02/country-info/blob/master/assets/4.png?raw=true&width=200" width="150">
