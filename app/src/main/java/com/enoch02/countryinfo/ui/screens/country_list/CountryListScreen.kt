@@ -97,6 +97,7 @@ fun CountryListScreen(
                                         CountryListView(
                                             countries = viewModel.searchResults,
                                             onItemClick = { name ->
+                                                viewModel.showSearchResults = false
                                                 navController.navigate(
                                                     CountryInfoDestination.CountryDetail.withArgs(
                                                         name
