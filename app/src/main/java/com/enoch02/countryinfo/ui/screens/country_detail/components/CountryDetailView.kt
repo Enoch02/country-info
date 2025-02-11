@@ -1,11 +1,14 @@
 package com.enoch02.countryinfo.ui.screens.country_detail.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -15,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -31,59 +35,113 @@ fun CountryDetailView(
     countryData: CountryData,
     statesData: List<StateData>,
 ) {
-    Column(modifier = modifier) {
-        Card(
-            modifier = Modifier
-                .padding(12.dp)
-                .fillMaxWidth()
-                .height(200.dp)
-        ) {
-            AsyncImage(
-                model = countryData.href.flag,
-                contentDescription = "${countryData.name}'s Flag",
-                contentScale = ContentScale.FillBounds,
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    if (isLandscape) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            FlagView(
+                url = countryData.href.flag,
+                name = countryData.name,
+                modifier = Modifier.fillMaxWidth(0.4f)
+            )
+
+            Spacer(Modifier.width(12.dp))
+
+            Column(
                 modifier = Modifier
-                    .fillMaxSize()
-            )
-        }
-
-        Spacer(Modifier.height(12.dp))
-
-        CountryDetailText(data = "Population", value = countryData.population)
-        CountryDetailText(data = "Capital City", value = countryData.capital)
-        if (countryData.currentPresident != null) {
-            CountryDetailText(
-                data = "Current President",
-                value = countryData.currentPresident.name
-            )
-        }
-        CountryDetailText(data = "Continent", value = countryData.continent)
-        CountryDetailText(data = "Country Code", value = countryData.phoneCode)
-
-        Spacer(Modifier.height(12.dp))
-
-        if (statesData.isNotEmpty()) {
-            Text(text = "States", style = MaterialTheme.typography.labelLarge)
-            LazyColumn(
+                    .weight(1f)
+                    .padding(8.dp),
                 content = {
-                    items(statesData) { stateData ->
-                        ListItem(
-                            headlineContent = {
-                                Text(stateData.name)
-                            },
-                            supportingContent = {
-                                stateData.region?.let { Text(it) }
-                            }
+                    CountryDetailText(data = "Population", value = countryData.population)
+                    CountryDetailText(data = "Capital City", value = countryData.capital)
+                    if (countryData.currentPresident != null) {
+                        CountryDetailText(
+                            data = "Current President",
+                            value = countryData.currentPresident.name
                         )
                     }
+                    CountryDetailText(data = "Continent", value = countryData.continent)
+                    CountryDetailText(data = "Country Code", value = countryData.phoneCode)
+
+                    StatesView(statesData = statesData)
                 }
             )
+        }
+    } else {
+        Column(modifier = modifier) {
+            FlagView(
+                url = countryData.href.flag,
+                name = countryData.name,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            CountryDetailText(data = "Population", value = countryData.population)
+            CountryDetailText(data = "Capital City", value = countryData.capital)
+            if (countryData.currentPresident != null) {
+                CountryDetailText(
+                    data = "Current President",
+                    value = countryData.currentPresident.name
+                )
+            }
+            CountryDetailText(data = "Continent", value = countryData.continent)
+            CountryDetailText(data = "Country Code", value = countryData.phoneCode)
+
+            Spacer(Modifier.height(12.dp))
+
+            StatesView(statesData = statesData)
         }
     }
 }
 
+@Composable
+fun FlagView(modifier: Modifier = Modifier, url: String, name: String) {
+    Card(
+        modifier = modifier
+            .padding(12.dp)
+            .height(200.dp)
+    ) {
+        AsyncImage(
+            model = url,
+            contentDescription = "${name}'s Flag",
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier
+                .fillMaxSize()
+        )
+    }
+}
 
-@Preview(showBackground = true)
+@Composable
+fun StatesView(modifier: Modifier = Modifier, statesData: List<StateData>) {
+    if (statesData.isNotEmpty()) {
+        Text(text = "States", style = MaterialTheme.typography.labelLarge)
+        LazyColumn(
+            content = {
+                items(statesData) { stateData ->
+                    ListItem(
+                        headlineContent = {
+                            Text(stateData.name)
+                        },
+                        supportingContent = {
+                            stateData.region?.let { Text(it) }
+                        }
+                    )
+                }
+            }
+        )
+    }
+}
+
+
+@Preview(showBackground = true, name = "Portrait")
+@Preview(
+    name = "Landscape",
+    widthDp = 800,
+    heightDp = 400,
+    showBackground = true
+)
 @Composable
 private fun Preview() {
     CountryDetailView(
