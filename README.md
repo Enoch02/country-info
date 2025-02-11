@@ -36,3 +36,14 @@ Follow these steps to contribute:
 - Make your changes and commit:
 `git commit -m "Add new feature"`
 - Push to your fork and create a Pull Request.
+
+## Screenshots
+<p align="center">
+  <img src="https://github.com/Enoch02/country-info/blob/master/assets/1.png?raw=true&width=200)" width="450">
+</p>
+<div align="center">
+  <img src="https://github.com/Enoch02/country-info/blob/master/assets/2.png?raw=true&width=200)" width="150">
+  <img src="https://github.com/Enoch02/country-info/blob/master/assets/3.png?raw=true&width=200" width="150">
+  <img src="https://github.com/Enoch02/country-info/blob/master/assets/4.png?raw=true&width=200" width="150">
+</div>
+
