@@ -19,19 +19,22 @@ import kotlinx.coroutines.launch
 private const val TAG = "CLViewModel"
 
 class CountryInfoViewModel : ViewModel() {
-    private val apiService = CountryApiService.getInstance()
+    private var apiService: CountryApiService? = null
     private val countries = mutableStateListOf<CountryData>()
 
     var contentState: ContentState by mutableStateOf(ContentState.Loading)
     var country: CountryData? by mutableStateOf(null)
     var statesResponse: StateResponse? by mutableStateOf(null)
+    val searchResults = mutableStateListOf<CountryData>()
 
     fun getAllCountries(context: Context) {
+        apiService = CountryApiService.getInstance(context)
+
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 contentState = ContentState.Loading
                 val response =
-                    apiService.getAllCountries("Bearer ${context.getString(R.string.country_api_key)}")
+                    apiService!!.getAllCountries("Bearer ${context.getString(R.string.country_api_key)}")
 
                 if (countries.isEmpty()) {
                     countries.addAll(response.data)
@@ -46,15 +49,19 @@ class CountryInfoViewModel : ViewModel() {
 
     fun loadCountryWith(name: String, context: Context) {
         country = countries.first { it.name == name }
-        Log.e(TAG, "loadCountryWith: $country", )
         viewModelScope.launch(Dispatchers.IO) {
             loadStates(context, name)
         }
     }
 
+    fun search(query: String) {
+        searchResults.clear()
+        searchResults.addAll(countries.filter { it.name.contains(query, ignoreCase = true) })
+    }
+
     private suspend fun loadStates(context: Context, country: String) {
         try {
-            statesResponse = apiService.getStates(
+            statesResponse = apiService?.getStates(
                 country = country,
                 bearerToken = "Bearer ${context.getString(R.string.country_api_key)}"
             )

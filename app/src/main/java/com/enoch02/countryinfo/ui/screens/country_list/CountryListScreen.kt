@@ -1,5 +1,6 @@
 package com.enoch02.countryinfo.ui.screens.country_list
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -74,23 +76,56 @@ fun CountryListScreen(
                     .fillMaxSize()
                     .padding(innerPadding),
                 content = {
-                    SearchAndFilterView(modifier = Modifier.weight(0.2f))
+                    var showSearchResults by rememberSaveable { mutableStateOf(false) }
+
+                    SearchAndFilterView(
+                        modifier = Modifier.weight(0.2f),
+                        onSearch = { query ->
+                            showSearchResults = true
+                            viewModel.search(query = query)
+                        },
+                        onClear = {
+                            showSearchResults = false
+                        }
+                    )
 
                     when (val content = viewModel.contentState) {
                         is ContentState.Loaded -> {
-                            CountryListView(
+                            AnimatedContent(
+                                showSearchResults,
+                                label = "MainContent Animation",
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .weight(0.8f),
-                                countries = content.documents.data,
-                                onItemClick = { name ->
-                                    navController.navigate(
-                                        CountryInfoDestination.CountryDetail.withArgs(
-                                            name
+                                    .weight(0.8f)
+                            ) { state ->
+                                when (state) {
+                                    true -> {
+                                        CountryListView(
+                                            countries = viewModel.searchResults,
+                                            onItemClick = { name ->
+                                                navController.navigate(
+                                                    CountryInfoDestination.CountryDetail.withArgs(
+                                                        name
+                                                    )
+                                                )
+                                            }
                                         )
-                                    )
+                                    }
+
+                                    false -> {
+                                        CountryListView(
+                                            countries = content.documents.data,
+                                            onItemClick = { name ->
+                                                navController.navigate(
+                                                    CountryInfoDestination.CountryDetail.withArgs(
+                                                        name
+                                                    )
+                                                )
+                                            }
+                                        )
+                                    }
                                 }
-                            )
+                            }
                         }
 
                         ContentState.Loading -> {

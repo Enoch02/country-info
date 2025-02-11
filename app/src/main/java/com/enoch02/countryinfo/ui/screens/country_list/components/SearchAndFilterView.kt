@@ -8,11 +8,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -24,13 +28,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.enoch02.countryinfo.R
 
 @Composable
-fun SearchAndFilterView(modifier: Modifier = Modifier) {
+fun SearchAndFilterView(
+    modifier: Modifier = Modifier,
+    onSearch: (String) -> Unit,
+    onClear: () -> Unit,
+) {
     var query by remember { mutableStateOf("") }
+
+    if (query.isEmpty()) {
+        onClear()
+    }
 
     Column(
         modifier = modifier.padding(horizontal = 18.dp),
@@ -40,7 +54,12 @@ fun SearchAndFilterView(modifier: Modifier = Modifier) {
         CountrySearchBar(
             query = query,
             onQueryChange = { query = it },
-            placeholder = "Search Country"
+            placeholder = "Search Country",
+            onSearch = { onSearch(query) },
+            onClear = {
+                query = ""
+                onClear()
+            }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -94,6 +113,8 @@ fun CountrySearchBar(
             contentDescription = "Search"
         )
     },
+    onSearch: () -> Unit,
+    onClear: () -> Unit,
 ) {
     TextField(
         value = query,
@@ -107,8 +128,23 @@ fun CountrySearchBar(
             )
         },
         leadingIcon = leadingIcon,
+        trailingIcon = {
+            if (query.isNotEmpty()) {
+                IconButton(onClick = onClear) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "Clear"
+                    )
+                }
+            }
+        },
         singleLine = true,
         shape = RectangleShape,
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Search,
+            capitalization = KeyboardCapitalization.Words
+        ),
+        keyboardActions = KeyboardActions(onSearch = { onSearch() })
     )
 }
 
@@ -116,5 +152,5 @@ fun CountrySearchBar(
 @Preview
 @Composable
 private fun Preview() {
-    SearchAndFilterView()
+    SearchAndFilterView(onSearch = {}, onClear = {})
 }
