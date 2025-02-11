@@ -14,6 +14,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
@@ -33,6 +34,8 @@ fun CountrySearchBar(
     onSearch: () -> Unit,
     onClear: () -> Unit,
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     TextField(
         value = query,
         onValueChange = onQueryChange,
@@ -61,6 +64,11 @@ fun CountrySearchBar(
             imeAction = ImeAction.Search,
             capitalization = KeyboardCapitalization.Words
         ),
-        keyboardActions = KeyboardActions(onSearch = { onSearch() })
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                keyboardController?.hide()
+                onSearch()
+            }
+        )
     )
 }
