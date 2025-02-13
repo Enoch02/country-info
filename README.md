@@ -1,7 +1,7 @@
 # Country Info App
 ## Overview
 
-This is an Android application that allows users to view a list of countries and see detailed information about a selected country. This functionality is provided by [Restful countries API](https://restfulcountries.com/api-documentation/version/1).
+This is an Android application that allows users to view a list of countries and see detailed information about a selected country. This functionality is provided by [Rest countries API](https://restcountries.com/).
 
 ## Prerequisites for building
 - [Latest Android Studio](https://developer.android.com/studio)
@@ -13,7 +13,7 @@ This is an Android application that allows users to view a list of countries and
 `git clone https://github.com/Enoch02/country-info`
 - Open the project in Android Studio.
 - Sync Gradle by selecting **File > Sync Project with Gradle Files**.
-- Obtain the API key:
+<!---- Obtain the API key:
 	- Visit [this page](https://restfulcountries.com/request-access-token).
 	- Enter your email and website URL.
 	- Copy the token that appears.
@@ -24,7 +24,7 @@ This is an Android application that allows users to view a list of countries and
   <resources>
     <string name="country_api_key">[secret key here]</string>
   </resources>
-	```
+	```-->
 - Run the app on an emulator or a connected device.
 
 
