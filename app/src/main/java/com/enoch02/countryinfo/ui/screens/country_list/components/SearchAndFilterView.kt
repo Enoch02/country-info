@@ -206,26 +206,26 @@ fun FilterBottomSheet(
 
             Box(modifier = Modifier.weight(1f)) {
                 Column(modifier = Modifier.padding(bottom = 78.dp)) {
-                    ContinentDropdown(
-//                modifier = Modifier.weight(1f),
-                        continents = continents,
-                        selectedContinents = selectedContinents,
-                        addContinent = { continent ->
+                    MultiChoiceDropdown(
+                        title = "Continent",
+                        values = continents,
+                        selectedValues = selectedContinents,
+                        addValue = { continent ->
                             addContinent(continent)
                         },
-                        removeContinent = { continent ->
+                        removeValue = { continent ->
                             removeContinent(continent)
                         }
                     )
 
-                    TimeZoneDropdown(
-//                modifier = Modifier.weight(1f),
-                        timezones = timezones,
-                        selectedTimezones = selectedTimezones,
-                        addTimezone = { timezone ->
+                    MultiChoiceDropdown(
+                        title = "Time Zone",
+                        values = timezones,
+                        selectedValues = selectedTimezones,
+                        addValue = { timezone ->
                             addTimezone(timezone)
                         },
-                        removeTimezone = { timezone ->
+                        removeValue = { timezone ->
                             removeTimezone(timezone)
                         }
                     )

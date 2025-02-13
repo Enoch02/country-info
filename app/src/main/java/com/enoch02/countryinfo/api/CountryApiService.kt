@@ -10,6 +10,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+/**
+ * Uses retrofit to call the API endpoint
+ *
+ */
 interface CountryApiService {
 
     @GET("all")

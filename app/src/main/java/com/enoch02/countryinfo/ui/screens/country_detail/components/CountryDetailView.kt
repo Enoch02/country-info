@@ -31,6 +31,11 @@ import coil.compose.AsyncImage
 import com.enoch02.countryinfo.model.Country
 import java.text.NumberFormat
 
+/**
+ * Displays the values obtained from instances of [Country]
+ *
+ * @param country the [Country] instance whose info will be displayed
+ */
 @Composable
 fun CountryDetailView(
     modifier: Modifier = Modifier,

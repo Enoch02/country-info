@@ -6,6 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
+/**
+ * Indeterminate progress indicator
+ */
 @Composable
 fun LoadingView(modifier: Modifier = Modifier) {
     Box(

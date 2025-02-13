@@ -23,13 +23,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.enoch02.countryinfo.R
 
+/**
+ * Display a multi-choice list of options for the user to choose from
+ *
+ * @param title shown at the top of possible values
+ * @param values a list of values the user can choose from
+ * @param selectedValues a list of values selected by the user
+ * @param addValue add a new value to the list of selected values
+ * @param removeValue remove a value from the list of selected values
+ */
 @Composable
-fun ContinentDropdown(
+fun MultiChoiceDropdown(
     modifier: Modifier = Modifier,
-    continents: List<String>,
-    selectedContinents: List<String>,
-    addContinent: (String) -> Unit,
-    removeContinent: (String) -> Unit,
+    title: String,
+    values: List<String>,
+    selectedValues: List<String>,
+    addValue: (String) -> Unit,
+    removeValue: (String) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -41,7 +51,7 @@ fun ContinentDropdown(
         ListItem(
             headlineContent = {
                 Text(
-                    text = "Continent",
+                    text = title,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
                     modifier = Modifier.padding(bottom = 8.dp)
@@ -66,104 +76,28 @@ fun ContinentDropdown(
 
         AnimatedVisibility(expanded) {
             LazyColumn {
-                items(continents) { continent ->
+                items(values) { continent ->
                     ListItem(
                         headlineContent = {
                             Text(text = continent)
                         },
                         trailingContent = {
                             Checkbox(
-                                checked = continent in selectedContinents,
+                                checked = continent in selectedValues,
                                 onCheckedChange = {
                                     if (it) {
-                                        addContinent(continent)
+                                        addValue(continent)
                                     } else {
-                                        removeContinent(continent)
+                                        removeValue(continent)
                                     }
                                 }
                             )
                         },
                         modifier = Modifier.clickable {
-                            if (continent in selectedContinents) {
-                                removeContinent(continent)
+                            if (continent in selectedValues) {
+                                removeValue(continent)
                             } else {
-                                addContinent(continent)
-                            }
-                        }
-                    )
-
-                }
-            }
-        }
-    }
-}
-
-
-@Composable
-fun TimeZoneDropdown(
-    modifier: Modifier = Modifier,
-    timezones: List<String>,
-    selectedTimezones: List<String>,
-    addTimezone: (String) -> Unit,
-    removeTimezone: (String) -> Unit,
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-    ) {
-        ListItem(
-            headlineContent = {
-                Text(
-                    text = "Time Zone",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-            },
-            trailingContent = {
-                Icon(
-                    painter = if (expanded) {
-                        painterResource(R.drawable.baseline_arrow_drop_up_24)
-                    } else {
-                        painterResource(R.drawable.baseline_arrow_drop_down_24)
-                    },
-                    contentDescription = "Dropdown Arrow"
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    expanded = !expanded
-                }
-        )
-
-        AnimatedVisibility(expanded) {
-            LazyColumn {
-                items(timezones) { continent ->
-                    ListItem(
-                        headlineContent = {
-                            Text(text = continent)
-                        },
-                        trailingContent = {
-                            Checkbox(
-                                checked = continent in selectedTimezones,
-                                onCheckedChange = {
-                                    if (it) {
-                                        addTimezone(continent)
-                                    } else {
-                                        removeTimezone(continent)
-                                    }
-                                }
-                            )
-                        },
-                        modifier = Modifier.clickable {
-                            if (continent in selectedTimezones) {
-                                removeTimezone(continent)
-                            } else {
-                                addTimezone(continent)
+                                addValue(continent)
                             }
                         }
                     )

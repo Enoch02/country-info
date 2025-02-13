@@ -21,6 +21,15 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 
+/**
+ * Obtains the user query and initiates a search
+ *
+ * @param query what to search for
+ * @param onQueryChange a callback function triggered when the query is modifier
+ * @param placeholder search bar hint
+ * @param onSearch specifies how to initiate the search
+ * @param onSearchQueryClear code to run when the search bar's clear button is tapped
+ */
 @Composable
 fun CountrySearchBar(
     query: String,

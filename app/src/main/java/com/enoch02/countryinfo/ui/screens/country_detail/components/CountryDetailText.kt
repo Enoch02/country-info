@@ -12,6 +12,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+/**
+ * Basic text that shows [data] : [value]...
+ *
+ * @param data value the detail represents
+ * @param value the value of the detail
+ */
 @Composable
 fun CountryDetailText(modifier: Modifier = Modifier, data: String, value: String) {
     Row(modifier = modifier) {

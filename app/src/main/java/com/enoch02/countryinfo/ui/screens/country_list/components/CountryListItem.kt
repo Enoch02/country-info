@@ -15,6 +15,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
+/**
+ * Basic component of the [CountryListView] composable
+ *
+ * @param flagUrl flag to display
+ * @param name country's name
+ * @param capital country' capital
+ * @param onClick what to do after the item is tapped
+ */
 @Composable
 fun CountryListItem(
     modifier: Modifier = Modifier,
