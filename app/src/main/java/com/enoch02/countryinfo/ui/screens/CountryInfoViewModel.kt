@@ -61,17 +61,6 @@ class CountryInfoViewModel : ViewModel() {
         searchResults.addAll(countries.filter { it.continents.any { continent -> continent in continents } })
         showSearchResults = true
     }
-
-    /*private suspend fun loadStates(context: Context, country: String) {
-        try {
-            statesResponse = apiService?.getStates(
-                country = country,
-                bearerToken = "Bearer ${context.getString(R.string.country_api_key)}"
-            )
-        } catch (e: Exception) {
-            Log.e(TAG, "loadStates: ${e.message}")
-        }
-    }*/
 }
 
 sealed class ContentState {

@@ -58,7 +58,7 @@ fun SearchAndFilterView(
         "Central America",
         "Oceania"
     )
-    val selectedContinents = remember { mutableStateListOf<String>("Africa") }
+    val selectedContinents = remember { mutableStateListOf("Africa") }
 
     Column(
         modifier = modifier.padding(horizontal = 18.dp),

@@ -7,7 +7,7 @@ data class Country(
     val capital: List<String>,
     val subregion: String,
     val population: Long,
-    val timeZones: List<String>,
+    val timeZones: List<String>?,
     val continents: List<String>,
 )
 

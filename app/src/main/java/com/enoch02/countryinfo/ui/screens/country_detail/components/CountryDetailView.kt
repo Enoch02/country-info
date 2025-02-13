@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.enoch02.countryinfo.model.Country
+import java.text.NumberFormat
 
 @Composable
 fun CountryDetailView(
@@ -31,6 +32,8 @@ fun CountryDetailView(
         ""
     }
     val continents = country.continents.joinToString(", ")
+    val timeZone = country.timeZones?.joinToString(", ") ?: ""
+    val population = NumberFormat.getNumberInstance().format(country.population)
 
     if (isLandscape) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -47,8 +50,11 @@ fun CountryDetailView(
                     .weight(1f)
                     .padding(8.dp),
                 content = {
-                    CountryDetailText(data = "Population", value = country.population.toString())
+                    CountryDetailText(data = "Population", value = population.toString())
+                    CountryDetailText(data = "Region", value = country.subregion)
                     CountryDetailText(data = "Capital City", value = capital)
+                    Spacer(Modifier.height(4.dp))
+
                     /*if (country.currentPresident != null) {
                         CountryDetailText(
                             data = "Current President",
@@ -56,9 +62,8 @@ fun CountryDetailView(
                         )
                     }*/
                     CountryDetailText(data = "Continent", value = continents)
+                    CountryDetailText(data = "Time Zone", value = timeZone)
 //                    CountryDetailText(data = "Country Code", value = country.phoneCode)
-
-//                    StatesView(statesData = statesData)
                 }
             )
         }
@@ -72,8 +77,11 @@ fun CountryDetailView(
 
             Spacer(Modifier.height(12.dp))
 
-            CountryDetailText(data = "Population", value = country.population.toString())
+            CountryDetailText(data = "Population", value = population.toString())
+            CountryDetailText(data = "Region", value = country.subregion)
             CountryDetailText(data = "Capital City", value = capital)
+            Spacer(Modifier.height(4.dp))
+
 //            if (country.currentPresident != null) {
 //                CountryDetailText(
 //                    data = "Current President",
@@ -81,7 +89,7 @@ fun CountryDetailView(
 //                )
 //            }
             CountryDetailText(data = "Continent", value = continents)
-            CountryDetailText(data = "Region", value = country.subregion)
+            CountryDetailText(data = "Time Zone", value = timeZone)
 //            CountryDetailText(data = "Country Code", value = country.phoneCode)
 
             Spacer(Modifier.height(12.dp))
