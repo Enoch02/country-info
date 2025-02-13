@@ -1,21 +1,24 @@
 package com.enoch02.countryinfo.ui.screens.country_list
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -33,6 +36,7 @@ import com.enoch02.countryinfo.ui.screens.country_list.components.SearchAndFilte
 fun CountryListScreen(
     viewModel: CountryInfoViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
+    darkTheme: Boolean,
     onToggleTheme: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -46,7 +50,18 @@ fun CountryListScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Explore")
+                    val painter = if (darkTheme) {
+                        painterResource(R.drawable.explore_dark)
+                    } else {
+                        painterResource(R.drawable.explore_light)
+                    }
+                    Image(
+                        painter = painter,
+                        contentDescription = null,
+                        contentScale = ContentScale.Inside,
+                        modifier = Modifier
+                            .height(32.dp)
+                    )
                 },
                 actions = {
                     IconButton(
@@ -72,6 +87,7 @@ fun CountryListScreen(
                 content = {
                     SearchAndFilterView(
                         modifier = Modifier.weight(0.2f),
+                        darkTheme = darkTheme,
                         onSearch = { query ->
                             viewModel.search(query = query)
                         },

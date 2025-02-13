@@ -32,7 +32,7 @@ fun CountryDetailView(
         ""
     }
     val continents = country.continents.joinToString(", ")
-    val timeZone = country.timeZones?.joinToString(", ") ?: ""
+    val timeZone = country.timezones?.joinToString(", ") ?: ""
     val population = NumberFormat.getNumberInstance().format(country.population)
 
     if (isLandscape) {

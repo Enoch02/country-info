@@ -53,7 +53,6 @@ fun ContinentDropdown(
                 text = "Continent",
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
-                color = Color.Black,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 

@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -23,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,6 +46,7 @@ import com.enoch02.countryinfo.R
 @Composable
 fun SearchAndFilterView(
     modifier: Modifier = Modifier,
+    darkTheme: Boolean,
     onSearch: (String) -> Unit,
     onClear: () -> Unit,
     onFilterByContinent: (continents: List<String>) -> Unit,
@@ -82,6 +87,18 @@ fun SearchAndFilterView(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            val colors = if (darkTheme) {
+                ButtonDefaults.elevatedButtonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.White
+                )
+            } else {
+                ButtonDefaults.elevatedButtonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Black
+                )
+            }
+
             ElevatedButton(
                 content = {
                     Icon(
@@ -100,10 +117,10 @@ fun SearchAndFilterView(
                 modifier = Modifier.alpha(0f)
             )
 
-            ElevatedButton(
+            OutlinedButton(
                 content = {
                     Icon(
-                        painter = painterResource(R.drawable.baseline_filter_list_alt_24),
+                        painter = painterResource(R.drawable.outline_filter_alt_24),
                         contentDescription = "Filter"
                     )
 
@@ -114,7 +131,8 @@ fun SearchAndFilterView(
                 onClick = {
                     showFilters = true
                 },
-                shape = RectangleShape
+                shape = RectangleShape,
+                colors = colors
             )
         }
     }
@@ -210,5 +228,5 @@ fun FilterBottomSheet(
 @Preview
 @Composable
 private fun Preview() {
-    SearchAndFilterView(onSearch = {}, onClear = {}, onFilterByContinent = {})
+    SearchAndFilterView(darkTheme = false, onSearch = {}, onClear = {}, onFilterByContinent = {})
 }

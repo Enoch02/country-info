@@ -17,8 +17,7 @@ fun CountryListView(
 ) {
     LazyColumn(
         modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 8.dp),
+            .fillMaxSize(),
         content = {
             items(countries) { country ->
                 val capital = if (country.capital.isNotEmpty()) {
