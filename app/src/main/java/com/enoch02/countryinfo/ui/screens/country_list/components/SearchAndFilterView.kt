@@ -1,6 +1,7 @@
 package com.enoch02.countryinfo.ui.screens.country_list.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,7 +25,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -49,7 +48,7 @@ fun SearchAndFilterView(
     darkTheme: Boolean,
     onSearch: (String) -> Unit,
     onClear: () -> Unit,
-    onFilterByContinent: (continents: List<String>) -> Unit,
+    onFilterByContinent: (query: String, continents: List<String>, timezones: List<String>) -> Unit,
 ) {
     var query by remember { mutableStateOf("") }
     var showFilters by remember { mutableStateOf(false) }
@@ -63,7 +62,17 @@ fun SearchAndFilterView(
         "Central America",
         "Oceania"
     )
-    val selectedContinents = remember { mutableStateListOf("Africa") }
+    val selectedContinents = remember { mutableStateListOf<String>() }
+    val timezones = listOf(
+        "UTC-12:00", "UTC-11:00", "UTC-10:00", "UTC-09:00",
+        "UTC-08:00", "UTC-07:00", "UTC-06:00", "UTC-05:00",
+        "UTC-04:00", "UTC-03:00", "UTC-02:00", "UTC-01:00",
+        "UTC+00:00", "UTC+01:00", "UTC+02:00", "UTC+03:00",
+        "UTC+04:00", "UTC+05:00", "UTC+06:00", "UTC+07:00",
+        "UTC+08:00", "UTC+09:00", "UTC+10:00", "UTC+11:00",
+        "UTC+12:00", "UTC+13:00", "UTC+14:00"
+    )
+    val selectedTimezones = remember { mutableStateListOf<String>() }
 
     Column(
         modifier = modifier.padding(horizontal = 18.dp),
@@ -75,7 +84,7 @@ fun SearchAndFilterView(
             onQueryChange = { query = it },
             placeholder = "Search Country",
             onSearch = { onSearch(query) },
-            onClear = {
+            onSearchQueryClear = {
                 query = ""
                 onClear()
             }
@@ -145,9 +154,16 @@ fun SearchAndFilterView(
             selectedContinents = selectedContinents,
             addContinent = { selectedContinents.add(it) },
             removeContinent = { selectedContinents.remove(it) },
-            clearContinents = { selectedContinents.clear() },
+            timezones = timezones,
+            selectedTimezones = selectedTimezones,
+            addTimezone = { selectedTimezones.add(it) },
+            removeTimezone = { selectedTimezones.remove(it) },
+            onClear = {
+                selectedContinents.clear()
+                selectedTimezones.clear()
+            },
             onShowResults = {
-                onFilterByContinent(selectedContinents)
+                onFilterByContinent(query, selectedContinents, selectedTimezones)
             }
         )
     }
@@ -162,7 +178,11 @@ fun FilterBottomSheet(
     selectedContinents: List<String>,
     addContinent: (String) -> Unit,
     removeContinent: (String) -> Unit,
-    clearContinents: () -> Unit,
+    timezones: List<String>,
+    selectedTimezones: List<String>,
+    addTimezone: (String) -> Unit,
+    removeTimezone: (String) -> Unit,
+    onClear: () -> Unit,
     onShowResults: () -> Unit,
 ) {
     ModalBottomSheet(
@@ -184,41 +204,58 @@ fun FilterBottomSheet(
                 }
             }
 
-            ContinentDropdown(
-                modifier = Modifier.weight(1f),
-                continents = continents,
-                selectedContinents = selectedContinents,
-                addContinent = { continent ->
-                    addContinent(continent)
-                },
-                removeContinent = { continent ->
-                    removeContinent(continent)
+            Box(modifier = Modifier.weight(1f)) {
+                Column(modifier = Modifier.padding(bottom = 78.dp)) {
+                    ContinentDropdown(
+//                modifier = Modifier.weight(1f),
+                        continents = continents,
+                        selectedContinents = selectedContinents,
+                        addContinent = { continent ->
+                            addContinent(continent)
+                        },
+                        removeContinent = { continent ->
+                            removeContinent(continent)
+                        }
+                    )
+
+                    TimeZoneDropdown(
+//                modifier = Modifier.weight(1f),
+                        timezones = timezones,
+                        selectedTimezones = selectedTimezones,
+                        addTimezone = { timezone ->
+                            addTimezone(timezone)
+                        },
+                        removeTimezone = { timezone ->
+                            removeTimezone(timezone)
+                        }
+                    )
                 }
-            )
 
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-                    .padding(bottom = 28.dp)
-            ) {
-                OutlinedButton(
-                    content = { Text(text = "Reset") },
-                    onClick = {
-                        clearContinents()
-                    },
-                    shape = RectangleShape
-                )
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .padding(bottom = 28.dp)
+                        .align(Alignment.BottomCenter)
+                ) {
+                    OutlinedButton(
+                        content = { Text(text = "Reset") },
+                        onClick = {
+                            onClear()
+                        },
+                        shape = RectangleShape
+                    )
 
-                Button(
-                    content = { Text(text = "Show Results") },
-                    onClick = {
-                        onShowResults()
-                        onDismiss()
-                    },
-                    shape = RectangleShape
-                )
+                    Button(
+                        content = { Text(text = "Show Results") },
+                        onClick = {
+                            onShowResults()
+                            onDismiss()
+                        },
+                        shape = RectangleShape
+                    )
+                }
             }
         }
     )
@@ -228,5 +265,9 @@ fun FilterBottomSheet(
 @Preview
 @Composable
 private fun Preview() {
-    SearchAndFilterView(darkTheme = false, onSearch = {}, onClear = {}, onFilterByContinent = {})
+    SearchAndFilterView(
+        darkTheme = false,
+        onSearch = {},
+        onClear = {},
+        onFilterByContinent = { _, _, _ -> })
 }

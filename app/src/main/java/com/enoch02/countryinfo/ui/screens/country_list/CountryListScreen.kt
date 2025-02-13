@@ -94,8 +94,8 @@ fun CountryListScreen(
                         onClear = {
                             viewModel.showSearchResults = false
                         },
-                        onFilterByContinent = { continents ->
-                            viewModel.filterByContinents(continents)
+                        onFilterByContinent = { query, continents, timezones ->
+                            viewModel.search(query, continents, timezones)
                         }
                     )
 

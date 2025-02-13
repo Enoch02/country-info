@@ -50,15 +50,26 @@ class CountryInfoViewModel : ViewModel() {
         country = countries.first { it.name.common == name }
     }
 
-    fun search(query: String) {
+    fun search(
+        query: String,
+        continents: List<String> = emptyList(),
+        timezones: List<String> = emptyList(),
+    ) {
         searchResults.clear()
-        searchResults.addAll(countries.filter { it.name.common.contains(query, ignoreCase = true) })
-        showSearchResults = true
-    }
 
-    fun filterByContinents(continents: List<String>) {
-        searchResults.clear()
-        searchResults.addAll(countries.filter { it.continents.any { continent -> continent in continents } })
+        val filteredByName = if (query.isBlank()) countries else countries.filter {
+            it.name.common.contains(query, ignoreCase = true)
+        }
+
+        val filteredByContinent = if (continents.isEmpty()) filteredByName else filteredByName.filter {
+            it.continents.any { continent -> continent in continents }
+        }
+
+        val filteredByTimeZone = if (timezones.isEmpty()) filteredByContinent else filteredByContinent.filter {
+            it.timezones?.any { timezone -> timezone in timezones } ?: false
+        }
+
+        searchResults.addAll(filteredByTimeZone)
         showSearchResults = true
     }
 }

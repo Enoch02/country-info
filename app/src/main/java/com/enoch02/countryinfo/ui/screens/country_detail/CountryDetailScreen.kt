@@ -68,7 +68,8 @@ fun CountryDetailScreen(
                         is ContentState.Error -> {
                             ErrorMessageView(
                                 message = content.message,
-                                onRetry = { viewModel.getAllCountries(context) }
+                                onRetry = { viewModel.getAllCountries(context) },
+                                modifier = Modifier.fillMaxSize()
                             )
                         }
 
@@ -89,7 +90,6 @@ fun CountryDetailScreen(
                             LoadingView(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .weight(0.8f)
                             )
                         }
                     }

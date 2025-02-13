@@ -35,7 +35,7 @@ fun CountrySearchBar(
     },
     colors: TextFieldColors = TextFieldDefaults.colors(),
     onSearch: () -> Unit,
-    onClear: () -> Unit,
+    onSearchQueryClear: () -> Unit,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -53,7 +53,7 @@ fun CountrySearchBar(
         leadingIcon = leadingIcon,
         trailingIcon = {
             if (query.isNotEmpty()) {
-                IconButton(onClick = onClear) {
+                IconButton(onClick = onSearchQueryClear) {
                     Icon(
                         imageVector = Icons.Default.Clear,
                         contentDescription = "Clear"
