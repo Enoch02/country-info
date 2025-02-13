@@ -109,7 +109,7 @@ fun CountryListScreen(
 
                                     false -> {
                                         CountryListView(
-                                            countries = content.documents.data,
+                                            countries = content.countries,
                                             onItemClick = { name ->
                                                 navController.navigate(
                                                     CountryInfoDestination.CountryDetail.withArgs(

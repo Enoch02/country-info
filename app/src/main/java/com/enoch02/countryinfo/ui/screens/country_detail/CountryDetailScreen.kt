@@ -74,13 +74,12 @@ fun CountryDetailScreen(
 
                         is ContentState.Loaded -> {
                             LaunchedEffect(Unit) {
-                                viewModel.loadCountryWith(countryName, context)
+                                viewModel.loadCountryWith(countryName)
                             }
 
                             viewModel.country?.let {
                                 CountryDetailView(
-                                    countryData = it,
-                                    statesData = viewModel.statesResponse?.data ?: emptyList(),
+                                    country = it,
                                     modifier = Modifier.padding(horizontal = 8.dp)
                                 )
                             }

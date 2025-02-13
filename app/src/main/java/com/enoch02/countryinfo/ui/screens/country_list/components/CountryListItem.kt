@@ -2,7 +2,9 @@ package com.enoch02.countryinfo.ui.screens.country_list.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.ListItem
@@ -27,7 +29,8 @@ fun CountryListItem(
         leadingContent = {
             Card(
                 modifier = Modifier
-                    .size(32.dp),
+                    .height(32.dp)
+                    .width(48.dp),
                 shape = RoundedCornerShape(6.dp),
                 content = {
                     AsyncImage(

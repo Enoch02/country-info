@@ -55,9 +55,8 @@ fun SearchAndFilterView(
         "Europe",
         "North America",
         "South America",
-        "The Caribean",
         "Central America",
-        "Oceana"
+        "Oceania"
     )
     val selectedContinents = remember { mutableStateListOf<String>("Africa") }
 
