@@ -36,6 +36,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     CountryInfoNavHost(
+                        darkTheme = darkTheme,
                         onToggleTheme = {
                             darkTheme = !darkTheme
                             saveBoolean(key, darkTheme)

@@ -1,32 +1,22 @@
 package com.enoch02.countryinfo.api
 
 import android.content.Context
-import com.enoch02.countryinfo.model.CountryApiResponse
-import com.enoch02.countryinfo.model.StateResponse
+import com.enoch02.countryinfo.model.Country
 import okhttp3.Cache
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Headers
-import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface CountryApiService {
 
-    //https://restfulcountries.com/api/v1/countries
-    @GET("countries")
+    @GET("all")
     suspend fun getAllCountries(
-        @Header("Authorization") bearerToken: String,
-    ): CountryApiResponse
+        @Query("fields") fields: String = "name,subregion,flags,population,capital,continents,callingCodes,coatOfArms,timezones",
+    ): List<Country>
 
-    @GET("countries/{country}/states")
-    suspend fun getStates(
-        @Path("country") country: String,
-        @Header("Authorization") bearerToken: String,
-    ): StateResponse
 
     companion object {
         private var apiService: CountryApiService? = null
@@ -37,7 +27,7 @@ interface CountryApiService {
 
             if (apiService == null) {
                 apiService = Retrofit.Builder()
-                    .baseUrl("https://restfulcountries.com/api/v1/")
+                    .baseUrl("https://restcountries.com/v3.1/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(
                         OkHttpClient.Builder()

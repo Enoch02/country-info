@@ -8,11 +8,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.enoch02.countryinfo.R
 import com.enoch02.countryinfo.api.CountryApiService
-import com.enoch02.countryinfo.model.CountryApiResponse
-import com.enoch02.countryinfo.model.CountryData
-import com.enoch02.countryinfo.model.StateResponse
+import com.enoch02.countryinfo.model.Country
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -20,13 +17,12 @@ private const val TAG = "CLViewModel"
 
 class CountryInfoViewModel : ViewModel() {
     private var apiService: CountryApiService? = null
-    private val countries = mutableStateListOf<CountryData>()
+    private val countries = mutableStateListOf<Country>()
 
     var contentState: ContentState by mutableStateOf(ContentState.Loading)
-    var country: CountryData? by mutableStateOf(null)
-    var statesResponse: StateResponse? by mutableStateOf(null)
+    var country: Country? by mutableStateOf(null)
 
-    val searchResults = mutableStateListOf<CountryData>()
+    val searchResults = mutableStateListOf<Country>()
     var showSearchResults by mutableStateOf(false)
 
     fun getAllCountries(context: Context) {
@@ -36,12 +32,13 @@ class CountryInfoViewModel : ViewModel() {
             try {
                 contentState = ContentState.Loading
                 val response =
-                    apiService!!.getAllCountries("Bearer ${context.getString(R.string.country_api_key)}")
+                    apiService!!.getAllCountries()
+                val sortedResponse = response.sortedBy { it.name.common }
 
                 if (countries.isEmpty()) {
-                    countries.addAll(response.data)
+                    countries.addAll(sortedResponse)
                 }
-                contentState = ContentState.Loaded(response)
+                contentState = ContentState.Loaded(sortedResponse)
             } catch (e: Exception) {
                 Log.e(TAG, "getAllCountries: ${e.message}")
                 contentState = ContentState.Error(e.message.toString())
@@ -49,39 +46,36 @@ class CountryInfoViewModel : ViewModel() {
         }
     }
 
-    fun loadCountryWith(name: String, context: Context) {
-        country = countries.first { it.name == name }
-        viewModelScope.launch(Dispatchers.IO) {
-            loadStates(context, name)
-        }
+    fun loadCountryWith(name: String) {
+        country = countries.first { it.name.common == name }
     }
 
-    fun search(query: String) {
+    fun search(
+        query: String,
+        continents: List<String> = emptyList(),
+        timezones: List<String> = emptyList(),
+    ) {
         searchResults.clear()
-        searchResults.addAll(countries.filter { it.name.contains(query, ignoreCase = true) })
-        showSearchResults = true
-    }
 
-    fun filterByContinents(continents: List<String>) {
-        searchResults.clear()
-        searchResults.addAll(countries.filter { it.continent in continents })
-        showSearchResults = true
-    }
-
-    private suspend fun loadStates(context: Context, country: String) {
-        try {
-            statesResponse = apiService?.getStates(
-                country = country,
-                bearerToken = "Bearer ${context.getString(R.string.country_api_key)}"
-            )
-        } catch (e: Exception) {
-            Log.e(TAG, "loadStates: ${e.message}")
+        val filteredByName = if (query.isBlank()) countries else countries.filter {
+            it.name.common.contains(query, ignoreCase = true)
         }
+
+        val filteredByContinent = if (continents.isEmpty()) filteredByName else filteredByName.filter {
+            it.continents.any { continent -> continent in continents }
+        }
+
+        val filteredByTimeZone = if (timezones.isEmpty()) filteredByContinent else filteredByContinent.filter {
+            it.timezones?.any { timezone -> timezone in timezones } ?: false
+        }
+
+        searchResults.addAll(filteredByTimeZone)
+        showSearchResults = true
     }
 }
 
 sealed class ContentState {
     data object Loading : ContentState()
-    data class Loaded(val documents: CountryApiResponse) : ContentState()
+    data class Loaded(val countries: List<Country>) : ContentState()
     data class Error(val message: String) : ContentState()
 }

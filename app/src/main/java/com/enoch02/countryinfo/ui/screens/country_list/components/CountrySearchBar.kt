@@ -11,6 +11,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -31,8 +33,9 @@ fun CountrySearchBar(
             contentDescription = "Search"
         )
     },
+    colors: TextFieldColors = TextFieldDefaults.colors(),
     onSearch: () -> Unit,
-    onClear: () -> Unit,
+    onSearchQueryClear: () -> Unit,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -50,7 +53,7 @@ fun CountrySearchBar(
         leadingIcon = leadingIcon,
         trailingIcon = {
             if (query.isNotEmpty()) {
-                IconButton(onClick = onClear) {
+                IconButton(onClick = onSearchQueryClear) {
                     Icon(
                         imageVector = Icons.Default.Clear,
                         contentDescription = "Clear"
@@ -69,6 +72,7 @@ fun CountrySearchBar(
                 keyboardController?.hide()
                 onSearch()
             }
-        )
+        ),
+        colors = colors
     )
 }
